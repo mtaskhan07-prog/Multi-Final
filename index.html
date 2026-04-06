@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HB 729: Don't Kill Rural NC's Tax Windfall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=DM+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0D0D0B;
+  --surface:  #161612;
+  --border:   rgba(255,255,255,0.08);
+  --gold:     #C8922A;
+  --gold-dim: #7A5418;
+  --amber:    #E8A830;
+  --red:      #B84030;
+  --green:    #3A7A50;
+  --text:     #E8E0D0;
+  --muted:    rgba(232,224,208,0.45);
+  --ink:      #0D0D0B;
+  --click-x:  50%;
+  --click-y:  50%;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--text);transition:background .6s,color .6s}
+body::after{content:'';position:fixed;inset:-50%;width:200%;height:200%;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
+
+.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:none}
+.screen.active{opacity:1;pointer-events:all}
+
+/* CUTSCENE */
+#cutscene{flex-direction:column;padding:0;overflow:hidden}
+.rail-wrap{position:relative;width:100vw;height:100vh;overflow:hidden}
+.rail{position:absolute;top:0;left:0;width:calc(7 * 100vw);height:100%;display:flex;transition:transform 1.1s cubic-bezier(.77,0,.175,1)}
+.slide{width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 10vw;position:relative;flex-shrink:0}
+.slide-bar{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold);transform:scaleY(0);transform-origin:top;transition:transform .6s ease .3s}
+.slide.visible .slide-bar{transform:scaleY(1)}
+.slide-tag{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;opacity:0;transform:translateX(-20px);transition:opacity .5s ease .1s,transform .5s ease .1s}
+.slide.visible .slide-tag{opacity:1;transform:translateX(0)}
+.slide-year{font-family:'Cormorant Garamond',serif;font-size:clamp(5rem,14vw,11rem);font-weight:700;line-height:.9;color:var(--gold);opacity:0;transform:translateY(40px);transition:opacity .7s ease .2s,transform .7s ease .2s;letter-spacing:-.03em}
+.slide.visible .slide-year{opacity:1;transform:translateY(0)}
+.slide-headline{font-family:'Cormorant Garamond',serif;font-size:clamp(1.4rem,3.5vw,2.6rem);font-weight:600;line-height:1.2;max-width:700px;text-align:center;margin-top:20px;opacity:0;transform:translateY(20px);transition:opacity .7s ease .45s,transform .7s ease .45s}
+.slide.visible .slide-headline{opacity:1;transform:translateY(0)}
+.slide-body{font-size:clamp(.78rem,1.5vw,.92rem);font-weight:300;line-height:1.75;color:var(--muted);max-width:560px;text-align:center;margin-top:20px;opacity:0;transform:translateY(16px);transition:opacity .7s ease .65s,transform .7s ease .65s}
+.slide.visible .slide-body{opacity:1;transform:translateY(0)}
+.slide-stat{margin-top:28px;padding:16px 28px;border:1px solid var(--border);background:var(--surface);font-size:clamp(.75rem,1.4vw,.88rem);color:var(--amber);letter-spacing:.05em;opacity:0;transform:scale(.95);transition:opacity .6s ease .85s,transform .6s ease .85s}
+.slide.visible .slide-stat{opacity:1;transform:scale(1)}
+.slide-stat span{font-family:'Cormorant Garamond',serif;font-size:1.6em;font-weight:700;color:var(--amber)}
+.slide-danger .slide-year,.slide-danger .slide-stat,.slide-danger .slide-stat span{color:var(--red)}
+.slide-danger .slide-bar{background:var(--red)}
+.slide-good .slide-year{color:var(--green)}
+.slide-good .slide-bar{background:var(--green)}
+
+.progress-dots{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:100}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);border:1px solid var(--gold-dim);transition:background .3s,transform .3s;cursor:pointer}
+.dot.active{background:var(--gold);transform:scale(1.4)}
+.next-btn{position:fixed;bottom:28px;right:32px;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 0;transition:gap .2s;z-index:200;font-family:'DM Mono',monospace}
+.next-btn:hover{gap:14px}
+.next-btn svg{width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:1.5}
+.cs-prog-wrap{position:fixed;bottom:0;left:0;right:0;height:2px;background:var(--border);z-index:300}
+.cs-prog-fill{height:100%;background:var(--gold);width:0%;transition:width .3s linear;box-shadow:0 0 8px var(--gold)}
+
+/* FADE */
+.fade-cover{position:fixed;inset:0;background:var(--bg);z-index:5000;pointer-events:none;opacity:0;transition:opacity .38s cubic-bezier(.4,0,.2,1)}
+.fade-cover.in{opacity:1;pointer-events:all}
+
+/* MENU */
+#menu{flex-direction:column;padding:48px}
+.menu-inner{display:grid;grid-template-columns:1fr 1fr;gap:0;width:min(900px,100%);min-height:min(600px,90vh);border:1px solid var(--border);background:var(--surface);position:relative;overflow:hidden}
+.menu-inner::before,.menu-inner::after{content:'';position:absolute;width:24px;height:24px;border-color:var(--gold);border-style:solid}
+.menu-inner::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+.menu-inner::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+.menu-left{padding:56px 48px;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid var(--border)}
+.menu-eyebrow{font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.menu-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:700;line-height:1.1;color:var(--text)}
+.menu-title em{font-style:italic;color:var(--gold)}
+.menu-line{width:40px;height:2px;background:var(--gold);margin:20px 0}
+.menu-desc{font-size:.8rem;font-weight:300;line-height:1.8;color:var(--muted);margin-top:24px;max-width:340px}
+.menu-enter-btn{display:inline-flex;align-items:center;gap:14px;margin-top:40px;padding:16px 32px;background:var(--gold);color:var(--ink);font-family:'DM Mono',monospace;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;border:none;cursor:none;font-weight:500;width:fit-content;transition:background .25s,gap .25s,transform .2s}
+.menu-enter-btn:hover{background:var(--amber);gap:22px;transform:translateY(-2px)}
+.menu-enter-btn svg{width:15px;height:15px;stroke:var(--ink);fill:none;stroke-width:2;flex-shrink:0}
+.menu-footer{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);opacity:.6}
+.menu-right{padding:48px;display:flex;flex-direction:column}
+.menu-right-head{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.menu-stat{display:flex;align-items:baseline;gap:16px;padding:18px 0;border-bottom:1px solid var(--border);opacity:0;transform:translateX(20px);transition:opacity .5s,transform .5s}
+.menu-stat.vis{opacity:1;transform:translateX(0)}
+.menu-stat-n{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:var(--gold);line-height:1;min-width:100px}
+.menu-stat-l{font-size:.72rem;font-weight:300;color:var(--muted);line-height:1.5}
+.menu-left-anim{opacity:0;transform:translateX(-30px);transition:opacity .7s ease .2s,transform .7s ease .2s}
+#menu.active .menu-left-anim{opacity:1;transform:translateX(0)}
+#menu.active .menu-left-anim:nth-child(2){transition-delay:.4s}
+#menu.active .menu-left-anim:nth-child(3){transition-delay:.6s}
+
+/* FIXED BUTTONS */
+.theme-toggle{position:fixed;top:24px;left:24px;z-index:500;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 14px;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:8px;transition:border-color .2s,color .2s}
+.theme-toggle:hover{border-color:var(--gold);color:var(--gold)}
+.replay-btn{position:fixed;top:24px;right:24px;z-index:500;background:none;border:1px solid var(--border);color:var(--muted);padding:8px 14px;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s;display:none}
+.replay-btn:hover{border-color:var(--gold);color:var(--gold)}
+.replay-btn.show{display:flex}
+.back-btn{position:fixed;top:32px;left:32px;z-index:26000;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 22px;font-family:'DM Mono',monospace;font-size:.65rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:.4s;cursor:pointer}
+body.page-open .back-btn{opacity:1;pointer-events:auto}
+.back-btn:hover{border-color:var(--gold)}
+
+/* PAGE OVERLAY */
+#page-overlay{position:fixed;inset:0;z-index:16000;background:var(--bg);clip-path:circle(0% at var(--click-x) var(--click-y));transition:clip-path .85s cubic-bezier(.19,1,.22,1),opacity .85s;overflow-y:auto;padding:130px 10% 90px 10%;opacity:0;pointer-events:none}
+body.page-open #page-overlay{clip-path:circle(150% at var(--click-x) var(--click-y));opacity:1;pointer-events:all}
+#page-overlay>*{opacity:0;transform:translateY(22px);transition:.75s cubic-bezier(.19,1,.22,1)}
+body.page-open #page-overlay>*{opacity:1;transform:translateY(0);transition-delay:.35s}
+#page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,4.5rem);font-weight:700;color:var(--gold);margin-bottom:28px;line-height:1.1}
+#page-content{font-size:clamp(.88rem,1.5vw,1rem);line-height:2;color:var(--muted);max-width:760px;font-weight:300}
+#page-content p{margin-bottom:1.5em}
+#page-content strong{color:var(--text);font-weight:600}
+.callout{border-left:3px solid var(--gold);padding:16px 24px;margin:28px 0;background:var(--surface);font-family:'Cormorant Garamond',serif;font-size:1.1em;color:var(--text);font-weight:600;line-height:1.5}
+
+/* MAIN SCROLL */
+#main-scroll{position:fixed;inset:0;z-index:7000;overflow-y:auto;scrollbar-width:none;opacity:0;pointer-events:none;transition:none}
+#main-scroll::-webkit-scrollbar{display:none}
+#main-scroll.active{opacity:1;pointer-events:all}
+.s-hint{position:absolute;bottom:10vh;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px}
+.s-hint span{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.s-line{width:1px;height:52px;background:linear-gradient(to bottom,var(--gold),transparent);animation:sline 2.2s infinite ease-in-out}
+@keyframes sline{0%{transform:scaleY(0);transform-origin:top;opacity:0}50%{transform:scaleY(1);transform-origin:top;opacity:1}100%{transform:scaleY(0);transform-origin:bottom;opacity:0}}
+
+.stack-card{width:88%;max-width:640px;min-height:42vh;background:var(--surface);border:1px solid var(--border);padding:52px 48px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.stack-card{border-color:var(--gold);box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 40px rgba(200,146,42,.15)}
+.card-num{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.card-head{font-family:'Cormorant Garamond',serif;font-size:clamp(1.3rem,2.8vw,2rem);font-weight:700;line-height:1.2;margin-bottom:18px;color:var(--text)}
+.card-body{font-size:.85rem;font-weight:300;line-height:1.9;color:var(--muted)}
+.grid-wrap{padding:120px 0 80px;background:var(--bg);width:100%;display:flex;flex-direction:column;align-items:center;scroll-snap-align:start;position:relative;z-index:3;border-top:1px solid var(--border)}
+.grid-head{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3.5vw,3rem);font-weight:700;text-align:center;margin-bottom:10px;color:var(--text)}
+.grid-sub{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:52px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:90%;max-width:1080px}
+.grid-item{perspective:1200px;cursor:pointer}
+.grid-card{background:var(--surface);border:1px solid var(--border);padding:52px 20px;text-align:center;transition:transform .55s cubic-bezier(.19,1,.22,1),box-shadow .45s,border-color .35s;box-shadow:0 10px 28px rgba(0,0,0,.3);transform-style:preserve-3d;will-change:transform;min-height:148px;display:flex;align-items:center;justify-content:center}
+.grid-item:hover .grid-card{border-color:var(--gold);box-shadow:0 0 40px rgba(200,146,42,.18),0 28px 55px rgba(0,0,0,.5)}
+.grid-label{font-family:'Cormorant Garamond',serif;font-size:clamp(.9rem,1.5vw,1.1rem);font-weight:700;color:var(--text);transition:color .3s,letter-spacing .4s cubic-bezier(.19,1,.22,1);display:inline-block}
+.grid-item:hover .grid-label{color:var(--gold);letter-spacing:.1em}
+.grid-scroll-hint{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:52px;opacity:0;transition:opacity 1s}
+body.grid-vis .grid-scroll-hint{opacity:1}
+.grid-scroll-hint span{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+.ref-wrap{padding:110px 0 130px;width:100%;display:flex;flex-direction:column;align-items:center;scroll-snap-align:start;position:relative;z-index:3;background:var(--bg)}
+.ref-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,7vw,6rem);font-weight:700;color:var(--gold);margin-bottom:56px;opacity:0;transform:translateY(60px);transition:opacity .9s cubic-bezier(.19,1,.22,1),transform .9s cubic-bezier(.19,1,.22,1)}
+.ref-title.rev{opacity:1;transform:translateY(0)}
+.ref-title.unrev{opacity:0;transform:translateY(60px)}
+.citation{font-size:clamp(.85rem,1.4vw,.98rem);line-height:2.1;color:var(--muted);max-width:820px;width:90%;margin-bottom:1.3em;text-indent:-2em;padding-left:2em;opacity:0;transform:translateY(48px) translateX(-16px);transition:opacity .8s cubic-bezier(.19,1,.22,1),transform .8s cubic-bezier(.19,1,.22,1)}
+.citation.rev{opacity:1;transform:translateY(0) translateX(0)}
+.citation.unrev{opacity:0;transform:translateY(48px) translateX(-16px)}
+.citation i{font-style:italic}
+
+
+@media(max-width:640px){.menu-inner{grid-template-columns:1fr}.menu-right{display:none}.menu-left{border-right:none}.grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+
+/* ── CUSTOM CURSOR ── */
+*{cursor:none!important}
+#cursor-ring{
+  position:fixed;pointer-events:none;z-index:99998;
+  width:42px;height:42px;
+  top:0;left:0;
+  transform:translate(-50%,-50%);
+  border-radius:0;
+  transition:
+    width .55s cubic-bezier(.19,1,.22,1),
+    height .55s cubic-bezier(.19,1,.22,1),
+    border-radius .55s cubic-bezier(.19,1,.22,1),
+    opacity .3s;
+  will-change:transform;
+}
+#cursor-svg{
+  width:100%;height:100%;
+  transition:
+    transform .55s cubic-bezier(.19,1,.22,1),
+    opacity .55s cubic-bezier(.19,1,.22,1);
+}
+#cursor-diamond{
+  stroke:#F0E8D8;
+  stroke-width:1.4;
+  transition:stroke .4s,fill .4s,opacity .55s cubic-bezier(.19,1,.22,1);
+  fill:none;
+  filter:drop-shadow(0 0 2px rgba(200,146,42,.5));
+}
+#cursor-center{
+  fill:#F0E8D8;
+  transition:fill .4s,opacity .55s cubic-bezier(.19,1,.22,1);
+}
+/* hover state */
+body.cur-hover #cursor-ring{width:62px;height:62px}
+body.cur-hover #cursor-diamond{stroke:#fff;fill:rgba(240,232,216,.08)}
+body.cur-hover #cursor-svg{transform:rotate(45deg)}
+/* click state */
+body.cur-click #cursor-ring{width:26px!important;height:26px!important}
+body.cur-click #cursor-diamond{fill:rgba(240,232,216,.2);stroke:#fff}
+/* text state — fade SVG out, grow a soft static bar, no flash */
+body.cur-text #cursor-ring{
+  width:2px;height:26px;
+  border-radius:2px;
+  background:rgba(240,232,216,.75);
+  box-shadow:none;
+}
+body.cur-text #cursor-svg{
+  opacity:0;
+  pointer-events:none;
+}
+
+/* ══════════════════════════
+   INTERIOR SECTIONS
+══════════════════════════ */
+#main-scroll{overflow-x:hidden}
+.site-section{min-height:100vh;position:relative;display:flex;flex-direction:column;justify-content:center;padding:0;overflow:hidden}
+
+/* hero */
+.hero-section{color:#fff}
+.hero-img-wrap{position:absolute;inset:0;z-index:0}
+.hero-img{width:100%;height:100%;object-fit:cover;filter:brightness(.45) saturate(.8)}
+.hero-img-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(13,13,11,.85) 50%,rgba(13,13,11,.3))}
+.hero-content{position:relative;z-index:2;padding:80px 8vw;max-width:900px}
+.section-tag{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;font-family:'DM Mono',monospace}
+.danger-tag{color:var(--red)}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4.5vw,4rem);font-weight:700;line-height:1.15;margin-bottom:24px;color:#fff}
+.section-lead{font-size:clamp(.92rem,1.6vw,1.1rem);font-weight:300;line-height:1.85;color:rgba(255,255,255,.7);max-width:620px;margin-bottom:40px}
+.section-lead.centered,.section-title.centered,.section-tag.centered{text-align:center;margin-left:auto;margin-right:auto}
+.section-title.centered{color:var(--text)}
+
+/* quick stats */
+.quick-stats{display:flex;align-items:center;gap:0;flex-wrap:wrap}
+.qs-item{padding:16px 32px 16px 0;min-width:140px}
+.qs-num{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:var(--gold);line-height:1}
+.qs-label{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:6px;font-family:'DM Mono',monospace}
+.qs-divider{width:1px;height:48px;background:rgba(255,255,255,.15);margin:0 24px}
+
+/* split section */
+.split-section{flex-direction:row;min-height:100vh}
+.split-img{width:42%;position:relative;overflow:hidden;flex-shrink:0}
+.fill-img{width:100%;height:100%;object-fit:cover;filter:brightness(.7) saturate(.75)}
+.split-img-caption{position:absolute;bottom:20px;left:20px;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace}
+.split-text{flex:1;padding:80px 6vw;display:flex;flex-direction:column;justify-content:center;background:var(--bg);overflow-y:auto}
+.section-title-sm{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.6rem);font-weight:700;line-height:1.2;margin-bottom:22px;color:var(--text)}
+.body-text{font-size:.92rem;font-weight:300;line-height:1.9;color:var(--muted);margin-bottom:16px}
+.muted-text{color:var(--muted)}
+.body-text strong{color:var(--text);font-weight:600}
+.fact-chip{background:rgba(200,146,42,.12);border:1px solid rgba(200,146,42,.3);color:var(--gold);font-size:.78rem;letter-spacing:.05em;padding:10px 18px;margin:16px 0;display:inline-block;font-family:'DM Mono',monospace}
+.counties-list{margin:4px 0 16px;line-height:2}.counties-intro{margin-bottom:2px!important}
+.county-tag{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-family:'DM Mono',monospace;display:inline-flex;align-items:center;padding:4px 12px;background:rgba(200,146,42,.15);border:1px solid rgba(200,146,42,.4);color:var(--gold);border-radius:2px;margin:3px 4px 3px 0;font-weight:500}
+.counties-list{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 16px}
+
+/* numbers section */
+.numbers-section{background:var(--surface);padding:80px 8vw;align-items:stretch;min-height:auto}
+
+.county-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:40px}
+.ctab{background:none;border:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;padding:12px 24px;cursor:none;transition:color .2s,border-bottom .2s;border-bottom:2px solid transparent;margin-bottom:-1px}
+.ctab.active,.ctab:hover{color:var(--gold);border-bottom:2px solid var(--gold)}
+.county-panel{animation:fadePanel .4s ease}
+.county-panel.hidden{display:none}
+@keyframes fadePanel{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.cp-before-after{display:flex;align-items:flex-end;gap:24px;height:200px;margin-bottom:32px}
+.cp-col{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1}
+.cp-label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace}
+.cp-bar-wrap{flex:1;width:100%;max-width:80px;display:flex;align-items:flex-end;background:rgba(255,255,255,.04);border-radius:2px 2px 0 0}
+.cp-bar{width:100%;border-radius:2px 2px 0 0;transition:height .8s cubic-bezier(.19,1,.22,1)}
+.cp-bar.before{background:var(--border)}
+.cp-bar.after{background:linear-gradient(to top,var(--gold),var(--amber))}
+.cp-val{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700}
+.muted-val{color:var(--muted)}
+.gold-val{color:var(--gold)}
+.cp-arrow{font-size:1.8rem;color:var(--gold);padding-bottom:60px;opacity:.6}
+.cp-stat-row{display:flex;gap:32px;flex-wrap:wrap}
+.cp-stat{display:flex;flex-direction:column;gap:4px}
+.cp-big{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1}
+.cp-desc{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace}
+
+/* threat section */
+.threat-section{color:#fff}
+.threat-img-wrap{position:absolute;inset:0;z-index:0}
+.threat-img{width:100%;height:100%;object-fit:cover;filter:brightness(.3) saturate(.5)}
+.threat-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,64,48,.35),rgba(13,13,11,.9))}
+.threat-content{position:relative;z-index:2;padding:80px 8vw;max-width:860px}
+.threat-pills{display:flex;flex-direction:column;gap:12px;margin:28px 0}
+.threat-pill{background:rgba(184,64,48,.2);border:1px solid rgba(184,64,48,.4);color:rgba(255,255,255,.85);font-size:.82rem;padding:12px 20px;font-family:'DM Mono',monospace;letter-spacing:.04em;position:relative;padding-left:36px}
+.threat-pill::before{content:'✕';position:absolute;left:14px;color:var(--red);font-weight:700}
+.pull-quote{border-left:3px solid var(--gold);padding:16px 24px;margin:32px 0;font-family:'Cormorant Garamond',serif;font-size:clamp(1.1rem,2vw,1.5rem);font-weight:400;font-style:italic;color:rgba(255,255,255,.9);line-height:1.6}
+.pull-quote cite{display:block;font-family:'DM Mono',monospace;font-style:normal;font-size:.65rem;letter-spacing:.15em;color:var(--gold);margin-top:12px}
+
+/* accordion section */
+.accordion-section{background:var(--bg);padding:80px 8vw;align-items:center}
+.accordion{width:100%;max-width:760px;margin:40px auto 0}
+.acc-item{border-bottom:1px solid var(--border);overflow:hidden}
+.acc-trigger{width:100%;background:none;border:none;color:var(--text);text-align:left;padding:22px 0;display:flex;justify-content:space-between;align-items:center;gap:20px;cursor:none;transition:color .2s}
+.acc-trigger:hover{color:var(--gold)}
+.acc-q{font-family:'Cormorant Garamond',serif;font-size:clamp(1rem,1.8vw,1.3rem);font-weight:600;line-height:1.3}
+.acc-icon{font-size:1.4rem;color:var(--gold);flex-shrink:0;transition:transform .3s}
+.acc-item.open .acc-icon{transform:rotate(45deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.19,1,.22,1)}
+.acc-item.open .acc-body{max-height:380px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--gold) var(--border)}
+.acc-item.open .acc-body::-webkit-scrollbar{width:4px}
+.acc-item.open .acc-body::-webkit-scrollbar-track{background:var(--border);border-radius:2px}
+.acc-item.open .acc-body::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+.acc-item.open .acc-body::-webkit-scrollbar-thumb:hover{background:var(--amber)}
+.acc-body>*{padding-bottom:20px}
+.acc-body-inner{padding:0 4px 8px 0}
+.acc-source{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;font-family:'DM Mono',monospace;padding-bottom:0!important}
+.acc-body p{font-size:.92rem;font-weight:300;line-height:1.9;color:var(--muted)}
+.acc-body p strong{color:var(--text);font-weight:600}
+
+/* ask section */
+.ask-section{color:#fff}
+.ask-img-wrap{position:absolute;inset:0;z-index:0}
+.ask-img{width:100%;height:100%;object-fit:cover;filter:brightness(.35) saturate(.6)}
+.ask-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(13,13,11,.92) 55%,rgba(13,13,11,.5))}
+.ask-content{position:relative;z-index:2;padding:80px 8vw;max-width:760px}
+.ask-checklist{display:flex;flex-direction:column;gap:14px;margin:28px 0 16px}
+.ask-check{display:flex;align-items:flex-start;gap:14px;font-size:.95rem;color:rgba(255,255,255,.82);font-weight:300;line-height:1.5}
+.check-icon{color:var(--gold);font-size:1rem;margin-top:2px;flex-shrink:0}
+.ask-cta{margin-top:16px}
+.cta-label{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;font-family:'DM Mono',monospace}
+.cta-box{background:var(--gold);color:var(--ink);padding:18px 32px;font-family:'Cormorant Garamond',serif;font-size:clamp(1.1rem,2vw,1.5rem);font-weight:700;line-height:1.3;display:inline-block}
+.cta-box strong{font-weight:900}
+
+/* references */
+.ref-wrap{padding:110px 8vw 130px;width:100%;display:flex;flex-direction:column;align-items:center;background:var(--bg)}
+
+@media(max-width:768px){
+  .split-section{flex-direction:column}
+  .split-img{width:100%;height:40vh}
+  .split-text{padding:48px 6vw}
+  .hero-content,.threat-content,.ask-content{padding:60px 6vw}
+  .numbers-section,.accordion-section{padding:60px 6vw}
+  .quick-stats{gap:0}
+  .qs-divider{display:none}
+  .qs-item{padding:12px 24px 12px 0}
+}
+
+/* stat cards */
+.numbers-inner{width:100%;max-width:820px;margin:0 auto}
+.numbers-footnote{font-size:.68rem;color:var(--muted);font-family:'DM Mono',monospace;border-top:1px solid var(--border);padding-top:18px;margin-top:8px}
+.numbers-footnote strong{color:var(--text)}
+
+/* comparison rows */
+.cmp-rows{display:flex;flex-direction:column;gap:0;margin-bottom:36px}
+.cmp-row{border:1px solid var(--border);padding:28px 32px;transition:border-color .3s,background .3s}
+.cmp-row:not(:last-child){border-bottom:none}
+.cmp-row:hover{border-color:var(--gold);background:rgba(200,146,42,.04)}
+.cmp-row-avg{background:rgba(200,146,42,.06);border-color:rgba(200,146,42,.3)!important}
+.cmp-county{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.cmp-badge{background:rgba(200,146,42,.15);color:var(--gold);padding:3px 10px;font-size:.56rem;letter-spacing:.15em;border-radius:1px}
+.cmp-cols{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}
+.cmp-col{display:flex;flex-direction:column;gap:4px}
+.cmp-before{text-align:left}
+.cmp-after{text-align:right;align-items:flex-end}
+.cmp-label{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-family:'DM Mono',monospace}
+.cmp-dollar{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;color:var(--text);line-height:1.1}
+.cmp-after .cmp-dollar{color:var(--gold)}
+.cmp-sub{font-size:.62rem;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.06em}
+.cmp-arrow-wrap{display:flex;flex-direction:row;align-items:center;gap:0;min-width:120px}
+.cmp-arrow-line{height:2px;flex:1;background:linear-gradient(to right,var(--border),var(--gold));border-radius:1px}
+.cmp-chevron{width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:2.5;flex-shrink:0}
+@media(max-width:600px){
+  .cmp-cols{grid-template-columns:1fr auto 1fr;gap:10px}
+  .cmp-dollar{font-size:1.3rem}
+  .cmp-row{padding:20px 18px}
+}
+
+/* image credits */
+.img-credit{position:absolute;bottom:10px;right:12px;font-size:.52rem;letter-spacing:.1em;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;text-transform:uppercase;pointer-events:none;z-index:3}
+.img-credit-split{bottom:40px}
+.img-credit-dark{color:rgba(255,255,255,.28)}
+
+/* section entrance — staggered wipe from left */
+.site-section{opacity:0;transform:translateY(32px);transition:opacity .85s cubic-bezier(.19,1,.22,1),transform .85s cubic-bezier(.19,1,.22,1)}
+.site-section.in-view{opacity:1;transform:translateY(0)}
+.hero-section{opacity:1;transform:none}
+
+/* split section image slides in from left */
+.split-section .split-img{transform:translateX(-24px);opacity:0;transition:opacity .9s cubic-bezier(.19,1,.22,1) .1s,transform .9s cubic-bezier(.19,1,.22,1) .1s}
+.split-section.in-view .split-img{transform:translateX(0);opacity:1}
+/* reversed split — image slides from right */
+.split-section[style*="row-reverse"] .split-img{transform:translateX(24px)}
+
+/* text content slides in slightly later */
+.split-section .split-text{opacity:0;transform:translateX(20px);transition:opacity .9s cubic-bezier(.19,1,.22,1) .22s,transform .9s cubic-bezier(.19,1,.22,1) .22s}
+.split-section.in-view .split-text{opacity:1;transform:translateX(0)}
+
+/* numbers rows stagger in */
+.cmp-row{opacity:0;transform:translateY(16px);transition:opacity .6s cubic-bezier(.19,1,.22,1),transform .6s cubic-bezier(.19,1,.22,1)}
+.numbers-section.in-view .cmp-row:nth-child(1){opacity:1;transform:translateY(0);transition-delay:.1s}
+.numbers-section.in-view .cmp-row:nth-child(2){opacity:1;transform:translateY(0);transition-delay:.22s}
+.numbers-section.in-view .cmp-row:nth-child(3){opacity:1;transform:translateY(0);transition-delay:.34s}
+
+/* voice cards stagger */
+.voice-card{opacity:0;transform:translateY(20px);transition:opacity .6s cubic-bezier(.19,1,.22,1),transform .6s cubic-bezier(.19,1,.22,1)}
+.voices-section.in-view .voice-card:nth-child(1){opacity:1;transform:translateY(0);transition-delay:.1s}
+.voices-section.in-view .voice-card:nth-child(2){opacity:1;transform:translateY(0);transition-delay:.22s}
+.voices-section.in-view .voice-card:nth-child(3){opacity:1;transform:translateY(0);transition-delay:.34s}
+
+/* threat pills wipe in */
+.threat-pill{opacity:0;transform:translateX(-16px);transition:opacity .5s cubic-bezier(.19,1,.22,1),transform .5s cubic-bezier(.19,1,.22,1)}
+.threat-section.in-view .threat-pill:nth-child(1){opacity:1;transform:translateX(0);transition-delay:.15s}
+.threat-section.in-view .threat-pill:nth-child(2){opacity:1;transform:translateX(0);transition-delay:.28s}
+.threat-section.in-view .threat-pill:nth-child(3){opacity:1;transform:translateX(0);transition-delay:.41s}
+.threat-section.in-view .threat-pill:nth-child(4){opacity:1;transform:translateX(0);transition-delay:.54s}
+
+
+/* accordion items */
+.acc-item{opacity:0;transform:translateY(12px);transition:opacity .5s cubic-bezier(.19,1,.22,1),transform .5s cubic-bezier(.19,1,.22,1)}
+.accordion-section.in-view .acc-item:nth-child(1){opacity:1;transform:translateY(0);transition-delay:.08s}
+.accordion-section.in-view .acc-item:nth-child(2){opacity:1;transform:translateY(0);transition-delay:.16s}
+.accordion-section.in-view .acc-item:nth-child(3){opacity:1;transform:translateY(0);transition-delay:.24s}
+.accordion-section.in-view .acc-item:nth-child(4){opacity:1;transform:translateY(0);transition-delay:.32s}
+.accordion-section.in-view .acc-item:nth-child(5){opacity:1;transform:translateY(0);transition-delay:.40s}
+/* stagger child elements in each section */
+.site-section.in-view .section-tag{transition-delay:.1s}
+.site-section.in-view .section-title,.site-section.in-view .section-title-sm{transition-delay:.18s}
+.site-section.in-view .section-lead,.site-section.in-view .body-text{transition-delay:.26s}
+.site-section.in-view .quick-stats{transition-delay:.34s}
+.site-section.in-view .stat-cards{transition-delay:.2s}
+.site-section.in-view .threat-pills{transition-delay:.22s}
+.site-section.in-view .pull-quote{transition-delay:.38s}
+.site-section.in-view .accordion{transition-delay:.2s}
+.site-section.in-view .ask-checklist{transition-delay:.22s}
+.site-section.in-view .ask-cta{transition-delay:.4s}
+
+/* inline quotes */
+.inline-quote{border-left:3px solid var(--gold);padding:14px 20px;margin:16px 0 20px;font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:var(--text);line-height:1.65;background:rgba(200,146,42,.06)}
+.iq-cite{font-family:'DM Mono',monospace;font-style:normal;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-top:10px}
+
+/* voices section */
+
+.voice-footnote strong{color:var(--text)}
+
+/* photo break */
+.photo-break-section{min-height:60vh;position:relative;display:flex;align-items:center;justify-content:center}
+.pb-img-wrap{position:absolute;inset:0;z-index:0}
+.pb-img{width:100%;height:100%;object-fit:cover;filter:brightness(.3) saturate(.7)}
+.pb-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,13,11,.9),rgba(13,13,11,.6))}
+.pb-content{position:relative;z-index:2;text-align:center;padding:60px 8vw}
+.pb-stat{font-family:'Cormorant Garamond',serif;font-size:clamp(4rem,12vw,9rem);font-weight:700;color:var(--gold);line-height:1}
+.pb-label{font-size:clamp(.9rem,2vw,1.3rem);color:rgba(255,255,255,.85);max-width:500px;margin:12px auto 0;line-height:1.5}
+.pb-sub{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:16px}
+
+@media(max-width:640px){
+  .voice-cards{grid-template-columns:1fr}
+}
+
+/* skip cutscene button */
+.skip-cs-btn{
+  position:fixed;top:24px;right:24px;z-index:400;
+  background:none;border:1px solid var(--border);
+  color:var(--muted);padding:8px 16px;
+  font-family:'DM Mono',monospace;font-size:.65rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  cursor:none;transition:border-color .2s,color .2s;
+}
+.skip-cs-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+.cmp-arrow-col{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}
+.cmp-arrow-row{display:flex;flex-direction:row;align-items:center;width:100%;gap:0}
+.cmp-pct{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--gold);white-space:nowrap}
+
+.pb-compare{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:32px;width:100%;max-width:900px;margin:0 auto}
+.pb-col{display:flex;flex-direction:column;align-items:flex-end;gap:10px;text-align:right}
+.pb-col+.pb-vs+.pb-col{align-items:flex-start;text-align:left}
+.pb-col-dim .pb-stat{color:rgba(255,255,255,.35)}
+.pb-col-dim .pb-label{color:rgba(255,255,255,.35)}
+.pb-stat-dim{color:rgba(255,255,255,.35)!important}
+.pb-vs{font-family:'DM Mono',monospace;font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.3);text-align:center;padding-bottom:2.5rem}
+
+/* ag findings */
+.ag-findings{display:flex;flex-direction:column;gap:12px;margin:16px 0}
+.ag-finding{display:flex;align-items:flex-start;gap:12px;font-size:.88rem;font-weight:300;line-height:1.7;color:var(--muted)}
+.ag-finding span:first-child{font-size:1.1rem;flex-shrink:0;margin-top:2px}
+.ag-finding strong{color:var(--text);font-weight:600}
+
+
+/* ── SITE NAV ── */
+.site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:9500;
+  background:rgba(13,13,11,.55);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(20px);
+  transform:translateY(-100%);
+  transition:transform .4s cubic-bezier(.19,1,.22,1);
+  display:none;
+}
+.site-nav.visible{transform:translateY(0)}
+#main-scroll.active ~ .site-nav,
+.site-nav.show{display:block}
+.site-nav-inner{
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;scrollbar-width:none;
+  padding:0 24px;
+  max-width:100%;
+}
+.site-nav-inner::-webkit-scrollbar{display:none}
+.nav-item{
+  background:none;border:none;
+  color:var(--muted);
+  font-family:'DM Mono',monospace;
+  font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:14px 16px;white-space:nowrap;
+  cursor:none;
+  transition:color .2s;
+  border-bottom:2px solid transparent;
+  flex-shrink:0;
+}
+.nav-item:hover{color:var(--text)}
+.nav-item.active{color:var(--gold);border-bottom:2px solid var(--gold)}
+.nav-item.clicked{color:var(--ink)!important;background:var(--gold);border-bottom:2px solid var(--gold);transition:background .05s,color .05s}
+.nav-back{color:var(--muted);border-right:1px solid var(--border);margin-right:8px;padding-right:20px}
+.nav-back:hover{color:var(--gold)!important}
+
+
+/* scroll indicator */
+.scroll-track{
+  position:fixed;right:0;top:0;bottom:0;
+  width:3px;z-index:9000;
+  background:rgba(255,255,255,.06);
+  opacity:0;transition:opacity .4s;
+  pointer-events:none;
+}
+.scroll-track.show{opacity:1}
+.scroll-thumb{
+  width:100%;
+  background:var(--gold);
+  box-shadow:0 0 6px var(--gold);
+  border-radius:1px;
+  height:0%;
+  transition:height .1s linear;
+  position:absolute;top:0;
+}
+
+/* county grid section */
+.county-section{background:var(--bg);padding:80px 8vw;min-height:auto;align-items:center}
+.county-inner{width:100%;max-width:980px;margin:0 auto}
+.county-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+.county-card{background:var(--surface);border:1px solid var(--border);padding:24px;transition:border-color .3s,transform .3s}
+.county-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.cc-name{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.cc-change{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,2.5vw,2.2rem);font-weight:700;color:var(--gold);line-height:1;margin-bottom:12px}
+.cc-vals{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:.65rem;margin-bottom:12px;flex-wrap:wrap}
+.cc-before{color:var(--muted)}
+.cc-after{color:var(--gold);font-weight:500}
+.cc-arrow{color:var(--border)}
+.cc-note{font-size:.72rem;font-weight:300;color:var(--muted);line-height:1.6;border-top:1px solid var(--border);padding-top:10px;margin-top:4px}
+.county-callout{display:flex;gap:16px;align-items:flex-start;background:rgba(184,64,48,.08);border:1px solid rgba(184,64,48,.25);padding:20px 24px;margin-top:8px}
+.cc-callout-icon{font-size:1.1rem;flex-shrink:0;margin-top:2px}
+.county-callout span:last-child{font-size:.82rem;font-weight:300;line-height:1.8;color:var(--muted)}
+.county-callout strong{color:var(--text);font-weight:600}
+@media(max-width:768px){.county-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.county-grid{grid-template-columns:1fr}}
+
+/* timeline section */
+.timeline-section{background:var(--surface);padding:80px 8vw;min-height:auto;align-items:center}
+.timeline-inner{width:100%;max-width:760px;margin:0 auto}
+.timeline{display:flex;flex-direction:column;gap:0;margin-top:48px;position:relative}
+.timeline::before{content:'';position:absolute;left:90px;top:0;bottom:0;width:1px;background:var(--border)}
+.tl-item{display:grid;grid-template-columns:90px 20px 1fr;align-items:flex-start;gap:0 20px;padding:0 0 40px 0;position:relative}
+.tl-year{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--muted);text-align:right;padding-right:20px;line-height:1.2;padding-top:2px}
+.tl-good .tl-year{color:var(--gold)}
+.tl-bad .tl-year{color:var(--red)}
+.tl-dot{width:12px;height:12px;border-radius:50%;background:var(--border);border:2px solid var(--border);margin-top:6px;flex-shrink:0;position:relative;z-index:1}
+.tl-good .tl-dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(200,146,42,.4)}
+.tl-bad .tl-dot{background:var(--red);border-color:var(--red);box-shadow:0 0 8px rgba(184,64,48,.4)}
+.tl-content{padding-left:4px}
+.tl-head{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.2}
+.tl-bad .tl-head{color:var(--red)}
+.tl-body{font-size:.85rem;font-weight:300;line-height:1.8;color:var(--muted)}
+
+/* quote break */
+.quote-break-section{min-height:50vh;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:60px 8vw}
+.qb-inner{max-width:760px;width:100%;display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center}
+.qb-line{width:60px;height:1px;background:var(--gold-dim)}
+.qb-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:600;font-style:italic;line-height:1.6;color:var(--text)}
+.qb-sub{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted)}
+
+/* closing section */
+.closing-section{background:var(--surface);padding:80px 8vw;min-height:auto;align-items:center}
+.closing-inner{width:100%;max-width:720px;margin:0 auto}
+.closing-body p{font-size:clamp(.92rem,1.5vw,1.05rem);font-weight:300;line-height:2;color:var(--muted);margin-bottom:1.6em}
+.closing-body p:last-child{color:var(--text);font-weight:400;margin-bottom:0}
+.closing-body strong{color:var(--text);font-weight:600}
+
+.cc-invest-label{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.cc-invest-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.cc-invest-tag{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;background:rgba(200,146,42,.1);border:1px solid rgba(200,146,42,.3);color:var(--gold);border-radius:2px}
+
+/* ── COUNTDOWN ── */
+
+
+/* ── VOICE CARD FLIP ── */
+.voice-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:0 0 32px;align-items:stretch}
+
+.vcf-context{font-size:.82rem;font-weight:300;line-height:1.75;color:var(--muted)}
+@media(max-width:640px){
+
+}
+
+/* ── TIMELINE PULSE ── */
+@keyframes pulse-gold{0%,100%{box-shadow:0 0 0 0 rgba(200,146,42,.5)}50%{box-shadow:0 0 0 8px rgba(200,146,42,0)}}
+@keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(184,64,48,.6)}50%{box-shadow:0 0 0 10px rgba(184,64,48,0)}}
+.tl-good .tl-dot{animation:pulse-gold 2.5s ease-in-out infinite}
+.tl-bad .tl-dot{animation:pulse-red 1.8s ease-in-out infinite}
+
+/* ── CHECKLIST ANIMATE IN ── */
+.ask-check{opacity:0;transform:translateX(-16px);transition:opacity .5s cubic-bezier(.19,1,.22,1),transform .5s cubic-bezier(.19,1,.22,1)}
+.ask-section.in-view .ask-check[data-i="0"]{opacity:1;transform:translateX(0);transition-delay:.1s}
+.ask-section.in-view .ask-check[data-i="1"]{opacity:1;transform:translateX(0);transition-delay:.22s}
+.ask-section.in-view .ask-check[data-i="2"]{opacity:1;transform:translateX(0);transition-delay:.34s}
+.ask-section.in-view .ask-check[data-i="3"]{opacity:1;transform:translateX(0);transition-delay:.46s}
+.ask-section.in-view .ask-check[data-i="4"]{opacity:1;transform:translateX(0);transition-delay:.58s}
+.ask-section.in-view .ask-check[data-i="5"]{opacity:1;transform:translateX(0);transition-delay:.70s}
+.check-anim{display:inline-block;transform:scale(0);transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.ask-section.in-view .ask-check[data-i="0"] .check-anim{transform:scale(1);transition-delay:.2s}
+.ask-section.in-view .ask-check[data-i="1"] .check-anim{transform:scale(1);transition-delay:.32s}
+.ask-section.in-view .ask-check[data-i="2"] .check-anim{transform:scale(1);transition-delay:.44s}
+.ask-section.in-view .ask-check[data-i="3"] .check-anim{transform:scale(1);transition-delay:.56s}
+.ask-section.in-view .ask-check[data-i="4"] .check-anim{transform:scale(1);transition-delay:.68s}
+.ask-section.in-view .ask-check[data-i="5"] .check-anim{transform:scale(1);transition-delay:.80s}
+
+/* cost section */
+.cost-section{background:var(--surface);padding:80px 8vw;align-items:center;min-height:auto}
+.cost-inner{width:100%;max-width:960px;margin:0 auto}
+.cost-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:40px 0 28px}
+.cost-card{background:var(--bg);border:1px solid var(--border);border-top:3px solid var(--red);padding:28px;transition:border-color .3s,transform .3s}
+.cost-card:hover{border-color:var(--red);transform:translateY(-3px)}
+.cost-icon{font-size:1.6rem;margin-bottom:12px}
+.cost-stat{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:700;color:var(--red);line-height:1;margin-bottom:8px}
+.cost-label{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:12px;line-height:1.5}
+.cost-body{font-size:.82rem;font-weight:300;line-height:1.8;color:var(--muted)}
+.cost-callout{background:rgba(184,64,48,.08);border:1px solid rgba(184,64,48,.25);padding:20px 28px;margin-top:4px}
+.cost-callout-text{font-size:.88rem;font-weight:300;line-height:1.85;color:var(--muted)}
+@media(max-width:768px){.cost-cards{grid-template-columns:1fr}}
+
+/* compromise cards */
+.compromise-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:8px}
+.comp-card{padding:24px;border:1px solid var(--border)}
+.comp-card-reject{border-color:rgba(184,64,48,.4);background:rgba(184,64,48,.06)}
+.comp-card-accept{border-color:rgba(200,146,42,.4);background:rgba(200,146,42,.06)}
+.comp-card-label{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;color:var(--muted)}
+.comp-card-reject .comp-card-label{color:rgba(184,64,48,.8)}
+.comp-card-accept .comp-card-label{color:var(--gold)}
+.comp-card-body{font-size:.85rem;font-weight:300;line-height:1.8;color:rgba(255,255,255,.7)}
+@media(max-width:640px){.compromise-cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="fade-cover" id="fadeCover"></div>
+<div class="scroll-track" id="scrollTrack"><div class="scroll-thumb" id="scrollThumb"></div></div>
+<!-- SITE NAV -->
+<nav class="site-nav" id="siteNav">
+  <div class="site-nav-inner">
+    <button class="nav-item nav-back" onclick="closeSite()">← Menu</button>
+    <button class="nav-item" onclick="navTo('sec-intro',this)">The Situation</button>
+    <button class="nav-item" onclick="navTo('sec-law',this)">2008 — The Decision</button>
+    <button class="nav-item" onclick="navTo('sec-timeline',this)">Timeline</button>
+    <button class="nav-item" onclick="navTo('sec-numbers',this)">The Numbers</button>
+    <button class="nav-item" onclick="navTo('sec-threat',this)">The Threat</button>
+    <button class="nav-item" onclick="navTo('sec-landowner',this)">Landowners</button>
+    <button class="nav-item" onclick="navTo('sec-agri',this)">Agrivoltaics</button>
+    <button class="nav-item" onclick="navTo('sec-case',this)">The Full Case</button>
+    <button class="nav-item" onclick="navTo('sec-ask',this)">The Path Forward</button>
+    <button class="nav-item" onclick="navTo('sec-refs',this)">References</button>
+  </div>
+</nav>
+
+<div id="cursor-ring">
+  <svg id="cursor-svg" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <polygon id="cursor-diamond" points="10,2 18,10 10,18 2,10" fill="none" stroke-width="1.2"/>
+    <circle id="cursor-center" cx="10" cy="10" r="1.5"/>
+  </svg>
+</div>
+
+
+<button class="replay-btn" id="replayBtn" onclick="replayCutscene()">↺ Replay</button>
+<button class="back-btn" onclick="closePage()">← Close — Esc</button>
+
+<div id="page-overlay">
+  <h1 id="page-title"></h1>
+  <div id="page-content"></div>
+</div>
+
+<!-- CUTSCENE -->
+<div class="screen active" id="cutscene">
+  <div class="rail-wrap">
+    <div class="rail" id="rail">
+      <div class="slide" id="slide-0">
+        <div class="slide-bar"></div>
+        <div class="slide-tag">North Carolina: A Decade in the Making</div>
+        <div class="slide-year">HB 729</div>
+        <div class="slide-headline">How a Rural Tax Windfall Became a Political Battleground</div>
+        <div class="slide-body">A timeline of legislation, investment, and what's at stake for your constituents.</div>
+      </div>
+      <div class="slide slide-good" id="slide-1">
+        <div class="slide-bar"></div>
+        <div class="slide-tag">The Beginning</div>
+        <div class="slide-year">2008</div>
+        <div class="slide-headline">NC Creates the 80% Solar Property Tax Abatement</div>
+        <div class="slide-body">The General Assembly establishes a tax abatement to attract solar investment to NC. No state spending required, just a market signal that made struggling communities attractive to private capital.</div>
+        <div class="slide-stat">A market-based solution, <span>zero</span> state spending required.</div>
+      </div>
+      <div class="slide" id="slide-2">
+        <div class="slide-bar"></div>
+        <div class="slide-tag">The Investment Arrives</div>
+        <div class="slide-year"></div>
+        <div class="slide-headline">Millions Flow into Rural Districts</div>
+        <div class="slide-body">Duplin, Robeson, Halifax, Edgecombe, Northampton: each receives over $500 million in solar investment. Solar takes root on leased farmland, generating income for landowners while leaving crops and livestock untouched.</div>
+        <div class="slide-stat">Rural county budgets transformed, permanently.</div>
+      </div>
+      <div class="slide slide-good" id="slide-3">
+        <div class="slide-bar"></div>
+        <div class="slide-tag">The Numbers Confirm It</div>
+        <div class="slide-year">2019</div>
+        <div class="slide-headline">NCSEA Documents the Fiscal Impact: $594,438.6 vs. $66,867.4</div>
+        <div class="slide-body">Across 50 NC counties, properties with solar paid $594,438.6 in property taxes, up from $66,867.4 before development. One county saw its tax base go from $25,207 to $964,915. That money funds schools and first responders in your districts.</div>
+        <div class="slide-stat">Solar occupies just <span>0.42%</span> of NC's total land area.</div>
+      </div>
+      <div class="slide slide-good" id="slide-4">
+        <div class="slide-bar"></div>
+        <div class="slide-tag">NC Leads the Nation</div>
+        <div class="slide-year">2024</div>
+        <div class="slide-headline">NC Ranks in the Top 10 in the U.S. for Clean Energy Jobs</div>
+        <div class="slide-body">113,000+ NC workers in clean energy (including efficiency, construction, and grid work), growing more than six times faster than the rest of the state's economy in 2024. NC added 3,254 clean energy jobs last year, ranking 8th in the U.S. for new jobs added. (E2, 2025)</div>
+        <div class="slide-stat">NC added <span>3,254</span> clean energy jobs in 2024: 8th most in the U.S.</div>
+      </div>
+      <div class="slide slide-danger" id="slide-5">
+        <div class="slide-bar"></div>
+        <div class="slide-tag">The Threat — 2025</div>
+        <div class="slide-year">HB 729</div>
+        <div class="slide-headline">The "Farmland Protection Act" Would Unwind All of It</div>
+        <div class="slide-body">Filed in 2025, HB 729 cuts the 80% property tax exclusion fully, effective July 1, 2029, and applies to existing projects. Every developer who invested based on the 2008 rules faces a sudden, unbudgeted cost increase.</div>
+        <div class="slide-stat">HB 729 cuts the solar tax exclusion from <span>80% to 0%</span>.</div>
+      </div>
+      <div class="slide" id="slide-6">
+        <div class="slide-bar"></div>
+        <div class="slide-tag">The Decision</div>
+        <div class="slide-year">Now</div>
+        <div class="slide-headline">Your Vote Determines What Your Counties Keep</div>
+        <div class="slide-body">The legislature that created this opportunity in 2008 now has the power to protect it, or eliminate it. The evidence is clear. The beneficiaries are your constituents. The action is one vote.</div>
+        <div class="slide-stat">The ask: <span>Vote No</span> on HB 729.</div>
+      </div>
+    </div>
+  </div>
+  <div class="progress-dots" id="dots"></div>
+  <button class="next-btn" id="nextBtn" onclick="nextSlide()">Next <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+  <div class="cs-prog-wrap"><div class="cs-prog-fill" id="csProg"></div></div>
+  <button class="skip-cs-btn" id="skipCsBtn" onclick="skipToMenu()">Skip ›</button>
+</div>
+
+<!-- MENU -->
+<div class="screen" id="menu">
+  <div class="menu-inner">
+    <div class="menu-left">
+      <div>
+        <div class="menu-left-anim">
+          <div class="menu-eyebrow">North Carolina General Assembly</div>
+          <div class="menu-title">Don't Kill <em>Rural NC's</em> Biggest Tax Windfall</div>
+          <div class="menu-line"></div>
+          <div class="menu-desc">An evidence-based case for NC Republican legislators to vote no on HB 729: the bill that would end the solar property tax abatement reshaping rural county budgets since 2008.</div>
+        </div>
+        <div class="menu-left-anim" style="transition-delay:.4s">
+          <button class="menu-enter-btn" onclick="enterSite()">
+            Enter Site
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="menu-left-anim" style="transition-delay:.6s">
+      </div>
+    </div>
+    <div class="menu-right">
+      <div class="menu-right-head">Key Numbers at a Glance</div>
+      <div class="menu-stat" id="ms1"><div class="menu-stat-n">113K+</div><div class="menu-stat-l">NC clean energy workers: top 10 in the U.S., growing 6× faster than the broader economy</div></div>
+      <div class="menu-stat" id="ms2"><div class="menu-stat-n">3×</div><div class="menu-stat-l">Effective tax increase on solar installations under HB 729</div></div>
+      <div class="menu-stat" id="ms3"><div class="menu-stat-n">0.42%</div><div class="menu-stat-l">Of NC's total land area occupied by solar panels</div></div>
+      <div class="menu-stat" id="ms4"><div class="menu-stat-n">+788.98%</div><div class="menu-stat-l">Average county's revenue post-solar</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- INTERIOR -->
+<div id="main-scroll">
+
+  <!-- ── SECTION 1: HERO SPLASH ── -->
+  <section class="site-section hero-section" id="sec-intro">
+    <div class="hero-img-wrap">
+      <img src="https://plus.unsplash.com/premium_photo-1678743133528-9afcd2b72b70?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Solar panels in a field" class="hero-img">
+      <div class="hero-img-overlay"></div>
+      <div class="img-credit">Photo: Benoît Deschasaux / Unsplash</div>
+    </div>
+    <div class="hero-content">
+      <div class="section-tag">The Situation</div>
+      <h2 class="section-title">Protecting farmland and protecting rural budgets<br>don't have to be in conflict.</h2>
+      <p class="section-lead">Legislators, like you, were elected to make judgments on behalf of the people in your district, and those judgments are rarely simple.The concerns behind this bill are real; farmland preservation matters, and questions about long-term agricultural land use in NC do deserve serious answers. This site doesn't dismiss those concerns, but rather asks a different question: does HB 729 actually achieve what its supporters want? The data suggest it does not, and that the counties your constituents depend on would pay the price.</p>
+      <div class="inline-quote" style="max-width:620px;margin-bottom:32px">"Clean energy jobs grew more than six times faster in North Carolina than the rest of the state’s economy in 2024."<div class="iq-cite">— (E2, 2025)</div></div>
+      <div class="quick-stats">
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: THE LAW ── -->
+  <section class="site-section split-section" id="sec-law">
+    <div class="split-img">
+      <img src="https://images.unsplash.com/uploads/141247613151541c06062/c15fb37d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="North Carolina farmland" class="fill-img">
+      <div class="img-credit img-credit-split">Photo: Jake Gard / Unsplash</div><div class="split-img-caption"></div>
+    </div>
+    <div class="split-text">
+      <div class="section-tag">2008: The Decision</div>
+      <h2 class="section-title-sm">A market-based decision that served rural NC and conservative principles.</h2>
+      <p class="body-text">The 2008 abatement reflected a principle most NC legislators on both sides of this debate share: government should set things up so private markets can work, rather than replace them entirely. Solar properties pay taxes on just 20% of assessed value; no state spending, no mandates, just a stable signal. The result: an estimated $59.1 billion in clean energy economic impact from 2007–2022 (Petrusa et al., 2023). Even for people who don’t support solar energy, the way this policy is set up is fairly conservative.</p>
+      <div class="fact-chip">Solar developers pay taxes on only 20% of the assessed property value, and the state does not directly spend money to support this structure.</div>
+      <p class="body-text counties-intro">Every one of these counties received over $500M in solar investment (Petrusa et al., 2023):</p><div class="counties-list">
+        <span class="county-tag">Duplin</span>
+        <span class="county-tag">Robeson</span>
+        <span class="county-tag">Halifax</span>
+        <span class="county-tag">Edgecombe</span>
+        <span class="county-tag">Northampton</span>
+        <span class="county-tag">Bladen</span>
+      </div>
+      <p class="body-text muted-text">The concern that solar development threatens NC farmland is understandable and are worth examining. The data itself shows that solar and agriculture are not necessarily in conflict. Pandey et al. (2025) found that agrivoltaic systems, where solar and active farming share the same land, can actually improve agricultural outcomes. This shows that solar and farmland protections can be compatible goals if implemented correctly.</p>
+      <p class="body-text" style="margin-top:12px"><strong>The shared interest:</strong> Both supporters and opponents of HB 729 want rural NC communities to thrive. The question is whether the bill, as written, advances that goal or whether it undermines the fiscal stability those communities have built over 17 years while not meaningfully protecting the farmland its title claims to defend.</p>
+    </div>
+  </section>
+
+
+  <!-- ── SECTION 2b: TIMELINE ── -->
+  <section class="site-section timeline-section" id="sec-timeline">
+    <div class="timeline-inner">
+      <div class="section-tag centered">17 Years in Four Moments</div>
+      <h2 class="section-title centered" style="color:var(--text)">The NC General Assembly built something.<br>HB 729 would undo it.</h2>
+      <div class="timeline">
+        <div class="tl-item tl-good">
+          <div class="tl-year">2008</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-head">The 80% Solar Tax Abatement</div>
+            <p class="tl-body">The NC General Assembly creates the abatement. Solar properties pay taxes on 20% of assessed value. No state spending. A market signal that rural NC land is open for business.</p>
+          </div>
+        </div>
+        <div class="tl-item tl-good">
+          <div class="tl-year"></div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-head">Millions Follow</div>
+            <p class="tl-body">Investment pours into rural districts. Duplin, Robeson, Halifax, Edgecombe, Northampton, and Bladen each exceed $500M in solar development. County budgets transform.</p>
+          </div>
+        </div>
+        <div class="tl-item tl-good">
+          <div class="tl-year">2024</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-head">NC Leads the Nation</div>
+            <p class="tl-body">113,000+ clean energy jobs: NC ranks in the top 10 nationally, adding 3,254 jobs in 2024 alone (8th most in the U.S.). Clean energy grows more than 6× faster than the broader NC economy. The 2008 bet paid off.</p>
+          </div>
+        </div>
+        <div class="tl-item tl-bad">
+          <div class="tl-year">2025</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-head">HB 729 Filed</div>
+            <p class="tl-body">HB 729 cuts the property tax exclusion from 80% to 0%: effective July 1, 2029, and applies to projects already built under the prior rules. Legislators who support the bill cite farmland preservation and tax equity as their goals. This site examines whether the bill's design achieves those goals, or whether it produces unintended costs for the counties it aims to protect.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3: THE NUMBERS ── -->
+  <section class="site-section numbers-section" id="sec-numbers">
+    <div class="numbers-inner">
+      <div class="section-tag">The Numbers: Your Districts</div>
+      <h2 class="section-title-sm" style="color:var(--text)">These aren't abstract projections.<br>These are your counties' actual budgets.</h2>
+      <p class="body-text" style="max-width:640px;margin-bottom:24px">Every figure below is a documented before-and-after property tax receipt from the Carey et al.'s study of NC counties. The county collects more tax from the same land. No state spending. No mandates.</p>
+      <div class="inline-quote">"The property taxes paid on the land after solar was installed increased by 1,801%... In total, the solar installations... paid over $19.6 million in taxes"<div class="iq-cite">- (Carey & Pate, 2025)</div></div>
+
+      <!-- Three comparison rows — simple, scannable, unmistakable -->
+      <div class="cmp-rows">
+
+        <div class="cmp-row">
+          <div class="cmp-county">Northampton County</div>
+          <div class="cmp-cols">
+            <div class="cmp-col cmp-before">
+              <div class="cmp-label">Before solar</div>
+              <div class="cmp-dollar">$31,978</div>
+              <div class="cmp-sub">tax before solar</div>
+            </div>
+            <div class="cmp-arrow-wrap">
+              <div class="cmp-arrow-col">
+                <div class="cmp-pct">+2,498%</div>
+                <div class="cmp-arrow-row">
+                  <div class="cmp-arrow-line"></div>
+                  <svg class="cmp-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="cmp-col cmp-after">
+              <div class="cmp-label">After solar</div>
+              <div class="cmp-dollar">$830,809</div>
+              <div class="cmp-sub">tax after solar</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmp-row">
+          <div class="cmp-county">Nash County</div>
+          <div class="cmp-cols">
+            <div class="cmp-col cmp-before">
+              <div class="cmp-label">Before solar</div>
+              <div class="cmp-dollar">$25,207</div>
+              <div class="cmp-sub">tax before solar</div>
+            </div>
+            <div class="cmp-arrow-wrap">
+              <div class="cmp-arrow-col">
+                <div class="cmp-pct">+3,728%</div>
+                <div class="cmp-arrow-row">
+                  <div class="cmp-arrow-line"></div>
+                  <svg class="cmp-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="cmp-col cmp-after">
+              <div class="cmp-label">After solar</div>
+              <div class="cmp-dollar">$964,915</div>
+              <div class="cmp-sub">tax after solar</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cmp-row cmp-row-avg">
+          <div class="cmp-county">5 NC Counties with Significant Tax Revenue Increase Average</div>
+          <div class="cmp-cols">
+            <div class="cmp-col cmp-before">
+              <div class="cmp-label">Before solar</div>
+              <div class="cmp-dollar">$66,867.4</div>
+              <div class="cmp-sub">average before solar</div>
+            </div>
+            <div class="cmp-arrow-wrap">
+              <div class="cmp-arrow-col">
+                <div class="cmp-pct">+788.98%</div>
+                <div class="cmp-arrow-row">
+                  <div class="cmp-arrow-line"></div>
+                  <svg class="cmp-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="cmp-col cmp-after">
+              <div class="cmp-label">After solar</div>
+              <div class="cmp-dollar">$594,438.6</div>
+              <div class="cmp-sub">tax after solar</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="inline-quote" style="margin-bottom:20px">"an average $225,574 increase in county real and personal property tax revenue following installation of the USS."<div class="iq-cite">- (Branan, 2025)</div></div>
+      <p class="body-text" style="max-width:680px;margin-bottom:24px">What these numbers mean in plain terms: a county that previously collected $66,867.40 in property taxes now collects $594,438.60 from the same land, without the state spending a single dollar to make that happen. Every rural school that got a new roof, every fire station that got new equipment, every road that got repaved in a solar-heavy district; that funding came, in part, from the tax revenue this abatement made possible. HB 729 doesn't just threaten future investment. It threatens the ongoing revenue stream that your counties are already budgeting around right now.</p>
+      <div class="county-callout" style="margin-top:20px">
+        <span class="cc-callout-icon">⚠</span>
+        <span>These revenue gains are current budget realities, your counties are already spending against them. HB 729 would unwind the policy that made all of it possible, penalizing developers who built in good faith under the prior rules.</span>
+      </div>
+      <div class="numbers-footnote" style="margin-top:16px">Source: (Carey et al., 2025)</div>
+    </div>
+  </section>
+
+
+  <!-- ── SECTION 4: THE THREAT ── -->
+  <section class="site-section threat-section" id="sec-threat">
+    <div class="threat-img-wrap">
+      <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Legislative documents" class="threat-img">
+      <div class="img-credit img-credit-dark">Photo: Unseen Studio / Unsplash</div>
+      <div class="threat-overlay"></div>
+    </div>
+    <div class="threat-content">
+      <div class="section-tag danger-tag">The Bill: What It Does</div>
+      <h2 class="section-title">What HB 729 changes and why the design matters.</h2>
+      <div class="threat-pills">
+        <div class="threat-pill">Cuts the property tax exclusion from 80% to 0%: effective July 1, 2029</div>
+        <div class="threat-pill">Triples the effective tax burden on solar installations already in operation</div>
+        <div class="threat-pill">Prohibits new utility-scale solar on agricultural land unless built on brownfields or clear-cut timberland</div>
+        <div class="threat-pill">Developers who built under the 2008 rules must adhere to strict new decommissioning plans and financial assurance requirements, particularly if they are rebuilt or expanded</div>
+        <div class="numbers-footnote" style="margin-top:16px">Source: (Bill Summary for H 729, 2025)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4c: LAND USE PHOTO BREAK ── -->
+  <section class="site-section photo-break-section">
+    <div class="pb-img-wrap">
+      <img src="https://images.unsplash.com/photo-1592833159057-6faf163494a9?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Solar panels on farmland" class="pb-img">
+      <div class="pb-overlay"></div>
+      <div class="img-credit img-credit-dark">Photo: Moritz Kindler / Unsplash</div>
+    </div>
+    <div class="pb-content">
+      <div class="pb-compare">
+        <div class="pb-col">
+          <div class="pb-stat">0.42%</div>
+          <div class="pb-label">of NC agricultural land<br>occupied by solar panels</div>
+        </div>
+        <div class="pb-vs">vs</div>
+        <div class="pb-col pb-col-dim">
+          <div class="pb-stat pb-stat-dim">7.18%</div>
+          <div class="pb-label">of NC agricultural land<br>occupied by single-family housing</div>
+        </div>
+      </div>
+      <div class="pb-sub">Source: (Catey & Pate, 2025). Land-use data provides context for the farmland conversation.</div>
+    </div>
+  </section>
+
+
+  <!-- ── PAUSE: PULL QUOTE BREAK ── -->
+  <section class="site-section quote-break-section">
+    <div class="qb-inner">
+      <div class="qb-line"></div>
+      <p class="qb-quote">
+        Both sides of this debate want rural NC to thrive.<br>
+        The question is which approach to solar and farmland policy<br>
+        best serves the communities that depend on both.
+      </p>
+      <div class="qb-line"></div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4d: LANDOWNER ECONOMICS ── -->
+  <section class="site-section split-section" id="sec-landowner" style="min-height:auto">
+    <div class="split-img" style="min-height:500px">
+      <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80" alt="Rural farmland landscape" class="fill-img" style="filter:brightness(.5) saturate(.7)">
+      <div class="img-credit img-credit-split">Photo: Neslihan Gunaydin / Unsplash</div>
+    </div>
+    <div class="split-text">
+      <div class="section-tag">What Solar Means for Landowners</div>
+      <h2 class="section-title-sm">For the farmer who leases, solar is the best crop they've ever grown.</h2>
+      <p class="body-text">The economic case for solar doesn't just live in county budgets, it alsolives on individual farms. Carey & Pate reports that solar lease rates run <strong>$750 to $1,400 per acre per year</strong>, depending on location and contract terms; even at the low end of that range, solar leasing generates more revenue per acre than barley, oats, or hay production.</p>
+      <div class="fact-chip"> Solar lease income: $750–$1,400/acre/year (varies by location and contract) often exceeds returns from lower-value crops like hay or oats (Carey & Pate, 2025)</div>
+      <p class="body-text">Kunskaja &amp; Budzyński (2026) found that <strong>lease payments to landowners</strong> represent one of the most consistent socioeconomic benefits of solar deployment; reliable, annual, and unaffected by weather, pest, or market fluctuations that make traditional crop income unpredictable. For many rural NC landowners, a solar lease is the first stable income their land has generated in years.</p>
+      <div class="inline-quote">"At the local level, renewable energy projects stimulate economic development through higher household incomes, lease payments to landowners, and increased tax revenues for local governments"<div class="iq-cite">- (Kunskaja &amp; Budzyński, 2026.)</div></div>
+      <p class="body-text">HB 729 would make NC a less attractive destination for new solar leases. Developers who face cost increases on existing projects will price that policy risk into future contracts, leading to lower lease offers, or no offers at all, for rural landowners who have not yet to make a deal.</p>
+      <p class="body-text">Think about who that affects. The rural landowner in your district who has been watching their neighbor's lease check come in every January and has been waiting for their own opportunity. The farmer whose land isn't ideal for crops anymore but could host panels. The family that wants to stay on their land but needs supplemental income to do it. A young farmer who needs the guaranteed lease payments from a solar project to afford to buy new equipment or purchase more livestock for the agricultural portion of their farm. HB 729 doesn't protect them. It closes a door that was finally starting to open.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4e: AGRIVOLTAICS ── -->
+  <section class="site-section split-section" id="sec-agri" style="flex-direction:row-reverse;min-height:auto">
+    <div class="split-img" style="min-height:500px">
+      <img src="https://images.unsplash.com/photo-1762381157166-f51ac99ab412?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Solar panels with crops" class="fill-img" style="filter:brightness(.6) saturate(.75)">
+      <div class="img-credit img-credit-split" style="right:20px;left:auto">Photo: Bernd Dittrich / Unsplash</div>    </div>
+    <div class="split-text">
+      <div class="section-tag">AGRIVOLTAICS</div>
+      <h2 class="section-title-sm">What the science says about solar and farmland co-existing.</h2>
+      <div class="inline-quote">“AVS provide co-benefits such as enhanced crop/pasture water-use efficiencies (up to 150–300 % improvement), greater land-use efficiency (up to 200 %), reduced irrigation demand (14 % reduction), improved profitability (up to 15 times higher revenue) and more consistent interannual crop/pasture production compared with conventional agricultural production systems in isolation”<div class="iq-cite">- (Pandey et al., 2025)</div></div>
+      <p class="body-text">Pandey et al. (2025) examined farms where solar panels and active agriculture share the same land and found that using the land for both solar and farming often works better than doing just one or the other</p>
+      <p class="body-text">Key findings from the study:</p>
+      <div class="ag-findings">
+        <div class="ag-finding"><span class="ag-icon">-</span><span>Up to <strong>150–300% improvement</strong> in crop water-use efficiency under solar canopies</span></div>
+        <div class="ag-finding"><span class="ag-icon">-</span><span><strong>14% reduction</strong> in irrigation demand, directly relevant to NC's rainfall-dependent agriculture</span></div>
+        <div class="ag-finding"><span class="ag-icon">-</span><span>Solar panels moderate soil temperature extremes, reducing crop stress</span></div>
+        <div class="ag-finding"><span class="ag-icon">-</span><span>Solar panel performance itself <strong>improved</strong> in agrivoltaic settings due to vegetative cooling</span></div>
+        <div class="ag-finding"><span class="ag-icon">-</span><span>Livestock grazing and pollinator habitats can coexist with active solar installations</span></div>
+        <div class="ag-finding"><span class="ag-icon">-</span><span>Profitability up to <strong>15 times higher</strong> in agrivoltaic systems compared to conventional agriculture alone</span></div>
+      </div>
+      <p class="body-text" style="margin-top:16px">The concern at the heart of HB 729 is that solar removes agricultural land from productive use. That concern is worth taking seriously. Pandey et al. (2025) found that in agrivoltaic systems, where solar and active agriculture share the same land, the combination often outperforms either use alone, particularly in hot or drought-prone conditions like much of NC's agricultural south. Rather than seeing the solar footprint on NC agricultural land as a loss, we should try to see it as a way to use the same land for multiple things; farm income, local tax revenue, growing food, etc.</p>
+      <p class="body-text">Right now, solar covers less than 1% of North Carolina’s farmland. Instead of treating solar as a "loss" of land, we should see it as a "managed asset." If legislators are actually worried about protecting farms, they should encourage smarter solar rather than seeking to kill the tax incentives. By setting standards for agrivoltaics, like requiring space for sheep grazing or pollinator habitats under the panels, we can keep the land in production, keep the tax revenue flowing into the county, and keep the farming profitable for the next generation.</p>
+    </div>
+  </section>
+
+
+  <!-- ── SECTION 5: THE FULL CASE ── -->
+  <section class="site-section accordion-section" id="sec-case">
+    <div class="section-tag centered">The Full Case</div>
+    <h2 class="section-title centered">Evidence, costs, and alternatives</h2>
+    <p class="section-lead centered">The strongest version of each argument, for and against HB 729, is examined below alongside the available evidence.</p>
+    <div class="accordion">
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span class="acc-q">Does solar actually hurt farmland?</span>
+          <span class="acc-icon">+</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-source"> (Pandey et al., 2025)</div>
+          <div class="inline-quote">"Agrivoltaic systems can provide a more efficient use of land resources… and lead to a more synergistic relationship between food and energy production."<div class="iq-cite">- Pandey et al. (2025), p. 849</div></div>
+          <p>Pandey et al. (2025) conducted a review of the agrivoltaics literature, synthesizing the entire body of research on what happens when solar panels and agriculture actually share the same land. That matters here because HB 729’s central claim is that solar harms farmland. The research here says the opposite, and it says it consistently across dozens of independent studies.</p>
+          <p style="margin-top:12px">The water-use efficiency finding is the most consequential one for NC specifically. North Carolina agriculture is heavily dependent on rainfall and irrigation. That improvement in water-use efficiency means the same crop requires dramatically less irrigation; solar panels reduce evaporation and moderate soil temperature, stabilizing moisture levels during NC's hot summer months. That is a direct, documented benefit to the farmer operating under them.</p>
+          <p style="margin-top:12px">What this means is that if HB 729 sponsors genuinely want to protect farmland, they are restricting the wrong thing. The data says agrivoltaic systems make farmland <em>more</em> productive, not less. Eliminating the abatement that makes these installations financially viable removes the economic incentive for a land-use model that data says benefits agriculture. The land-use data makes the bill's title difficult to defend. Single-family housing occupies 7.18% of NC agricultural land. The bill is called the <i>Farmland Protection Act</i>, but the data does not support that name.</p>
+        </div>
+      </div>
+
+
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span class="acc-q">Does policy stability actually affect what solar delivers for communities?</span>
+          <span class="acc-icon">+</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-source"> (Kunskaja &amp; Budzyński, 2026)</div>
+          <div class="inline-quote">"These benefits are, however, heterogeneous and depend on enabling conditions such as policy stability, financial development, grid integration, innovation capacity, and social acceptance. "<div class="iq-cite">— Kunskaja &amp; Budzyński (2026), <em>Solar</em>, 6(1), 3</div></div>
+          <p>Kunskaja &amp; Budzyński (2026) conducted a review of studies on the societal welfare outcomes of solar and renewable energy deployment across multiple countries, using SALSA and PRISMA methodology. Their findings confirm that solar consistently produces economic welfare gains; employment growth, higher household incomes, increased local tax revenue, but with one critical condition: those gains depend on policy stability. It is the first enabling condition they identify. Without it, the documented benefits shrink.</p>
+          <p style="margin-top:12px">This is the direct basis for why HB 729 is damaging beyond the projects already in the ground. NC built millions in estimated rural investment on the predictability of the 2008 abatement. Cutting the exclusion in half, with no transition period and no grandfathering, signals to every future developer evaluating NC that the state's policy commitments are subject to revision after capital has been committed. Kunskaja &amp; Budzyński document what follows: developers reprice their exposure, future projects stall or relocate, and the communities that were still in line to receive the next wave of investment don't. The bill doesn't just harm what was built. It forecloses what could have been.</p>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span class="acc-q">Can solar installations actually coexist with, or benefit, the land they sit on?</span>
+          <span class="acc-icon">+</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-source"> (Hernandez et al., 2019)</div>
+          <div class="inline-quote">"The strategic engineering of solar energy technologies—from individual rooftop modules to large solar energy power plants—can confer significant synergistic outcomes across industrial and ecological boundaries."<div class="iq-cite">— (Hernandez et al., 2019)</div></div>
+          <p>Hernandez et al. (2019) introduced the concept of techno-ecological synergy (TES), a framework for engineering mutually beneficial relationships between solar installations and its surrounding ecological systems. The study identified 16 distinct synergies between solar energy infrastructure and natural systems, spanning land, food, water, and built environments.</p>
+          <p style="margin-top:12px">The relevance to HB 729 is quite direct. The bill's farmland protection premise assumes that solar installations and agricultural or ecological land use are in conflict, where one displaces the other. Hernandez et al. says the opposite: that thoughtfully sited and engineered solar installations can create measurable ecological benefits on the same land, including soil stabilization, pollinator habitat, reduced evaporation, and improved microclimate conditions for surrounding vegetation.</p>
+          <p style="margin-top:12px">For NC legislators weighing HB 729, this matters in a specific way. The bill's prohibition on new utility-scale solar on agricultural land assumes the land-use tradeoff is zero-sum. The evidence here clearly says it is not. The question is not whether solar or farmland, it is whether the installations are designed with ecological co-benefits in mind. HB 729 forecloses that design question entirely by prohibiting the installations outright.</p>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span class="acc-q">What are the strongest arguments for HB 729 and why don't they hold?</span>
+          <span class="acc-icon">+</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-source"> Real Counterarguments and the Response</div>
+          <p><strong>Counterargument 1: Solar locks up farmland for 25–35 years.</strong> This is the bill's most legitimate concern. Solar lease terms are long, and a landowner who signs a lease is effectively removing it from traditional crop rotation for a generation. For agricultural communities worried about long-term food production capacity, that is a real concern worth taking seriously.</p>
+          <p style="margin-top:12px">The response: the bill's answer, restricting solar on agricultural land and taxing installations, is far broader than the problem it claims to solve. A targeted response would require agrivoltaic practices for new approvals on prime agricultural land, not a ban. Pandey et al. (2025) documented that agrivoltaic systems maintain at least 80% of crop yield while generating solar energy, the science already provides the compromise, but HB 729 ignores it.</p>
+          <p style="margin-top:12px"><strong>Counterargument 2: The 80% abatement is unfair to non-solar landowners who pay full tax rates.</strong> This is a genuine equity argument. A landowner who does not host solar panels pays property tax on 100% of assessed value, while their neighbor with panels pays on only 20%. That disparity is real and legislators from non-solar-heavy districts have legitimate standing to raise it.</p>
+          <p style="margin-top:12px">The response: the solution is a prospective reform with adequate transition time, not taxation. If the General Assembly wants to reduce the exclusion for new installations going forward, that conversation is legitimate and can be had without punishing the developers and counties that built the current system in good faith. The application of HB 729 is what makes it indefensible, not the underlying policy question it is trying to address.</p>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-trigger" onclick="toggleAcc(this)">
+          <span class="acc-q">What are the alternatives and why are they worse?</span>
+          <span class="acc-icon">+</span>
+        </button>
+        <div class="acc-body">
+          <div class="acc-source"> Alternatives Analysis</div>
+          <p><strong>Alternative 1: Pass HB 729 as written.</strong> This cuts the exclusion from 80% to 0% and prohibits new utility-scale solar on most agricultural land. Counties would see immediate reductions in property tax revenue from existing solar installations, revenue already budgeted for schools and emergency services. Developers also face cost increases they never agreed to. This would signal to future investors, who want to invest in solar projects in NC, that its incentive structures are subject to revision, which would freeze the pipeline of future projects.</p>
+          <p style="margin-top:12px"><strong>Alternative 2: Negotiate a modified abatement.</strong> A reduced abatement, say 60% rather than 80%, would increase county tax revenue from existing solar projects while preserving some investment incentive going forward. This is a theoretically viable middle path, but it still applies a cost increase to existing projects, maintains the breach of investment certainty, and is not currently on the legislative table.</p>
+          <p style="margin-top:12px">The cleanest and most defensible compromise is a clean vote No on HB 729 as filed. It requires no new legislation, no negotiation, and no state spending. It simply keeps a working policy intact. If the legislature wants to revisit the abatement structure in a future session, that conversation can happen then. But that is a different bill.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── SECTION 6: THE ASK ── -->
+  <section class="site-section ask-section" id="sec-ask">
+    <div class="ask-img-wrap">
+      <img src="https://plus.unsplash.com/premium_photo-1678743133487-d501f3b0696b?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Solar panels sunset" class="ask-img">
+      <div class="img-credit img-credit-dark">Photo: Benoît Deschasaux / Unsplash</div>
+      <div class="ask-overlay"></div>
+    </div>
+    <div class="ask-content">
+      <div class="section-tag">The Path Forward</div>
+      <h2 class="section-title">A vote No is the beginning of a better conversation.</h2>
+      <div class="ask-checklist">
+        <div class="ask-check" data-i="0"><span class="check-icon check-anim">✓</span><span>No new bill. No state spending. Just one vote.</span></div>
+        <div class="ask-check" data-i="1"><span class="check-icon check-anim">✓</span><span>Keeps millions in estimated rural investment protected</span></div>
+        <div class="ask-check" data-i="2"><span class="check-icon check-anim">✓</span><span>Preserves county tax revenue</span></div>
+        <div class="ask-check" data-i="3"><span class="check-icon check-anim">✓</span><span>Defends landowners who signed leases under the 2008 rules</span></div>
+        <div class="ask-check" data-i="4"><span class="check-icon check-anim">✓</span><span>Sustains 113,000+ NC clean energy jobs</span></div>
+        <div class="ask-check" data-i="5"><span class="check-icon check-anim">✓</span><span>Government keeps its word, a core conservative value</span></div>
+      </div>
+      <p style="margin-bottom:12px;font-size:.9rem;color:rgba(255,255,255,.65);line-height:1.8">The people who filed HB 729 aren't wrong about real questions here; about farmland, about tax fairness, about what rural NC looks like in the future. Those are worth answering, but HB 729 doesn't answer them truthfully. It hits projects that were already built under the old rules. It's broader than the problem it's trying to solve and costing the counties it's supposed to protect. Voting No doesn't mean the conversation is over, it just means the next bill can be written more carefully: grandfather existing installations, apply any new abatement rules to future projects only, and set agrivoltaic co-location standards for new solar on prime agricultural land. That actually addresses the farmland concern and actually addresses tax equity. HB 729 does neither, it risks unintended economic consequences.</p>
+      <div class="ask-cta">
+        <div class="cta-label">The immediate vote and what comes after</div>
+        <div class="cta-box">Vote <strong>NO</strong> on HB 729 as written; then bring a bill that actually works</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── CLOSING STATEMENT ── -->
+  <section class="site-section closing-section" id="sec-closing">
+    <div class="closing-inner">
+      <div class="section-tag centered">A Final Word</div>
+      <div class="closing-body">
+        <p>Every number came from a study or a documented government record. The concerns behind HB 729: farmland preservation, tax equity, rural land use are legitimate concerns that deserve serious policy responses. This site has tried to take them seriously, and to show what the available evidence says about whether this specific bill addresses them well.</p>
+        <p>The legislature that created this opportunity in 2008 did not spend state money or mandate anything. They simply created conditions for private capital to flow into rural NC; and it did, at a scale that transformed county budgets across 50 counties. That is a legacy worth protecting.</p>
+        <p>The science on agrivoltaics shows that solar and farmland can coexist productively and that co-location requirements would address farmland concerns more precisely than an abatement cut. The fiscal data shows that rural NC counties have built real budget gains on the stability of the 2008 policy. Landowners who have not yet signed solar leases stand to benefit from a stable investment environment, not a chilled one.</p>
+        <p>A vote No on HB 729 as written isn't a vote against farmland protection, but for finding a way to address legitimate land-use concerns without dismantling the fiscal foundation that rural NC built over 17 years.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── REFERENCES ── -->
+  <div class="ref-wrap" id="sec-refs">
+    <div class="ref-title" data-rev>References</div>
+    <p class="citation" data-rev>E2. (2025, November 13). Clean energy grew 6X faster than rest of North Carolina economy, added 3K jobs in 2024. <i>E2: Good for the Economy. Good for the Environment.</i> https://e2.org/releases/clean-jobs-north-carolina-2025-report/</p>
+    <p class="citation" data-rev><i>Bill summary for H 729 (2025-2026) | legislative reporting service (2025).</i> Unc.edu. https://lrs.sog.unc.edu/billsum/H-729-2025-2026</p>
+    <p class="citation" data-rev>Branan, R. (2025, June 30). </i>Solar development: NCSEA releases report on property tax impact - farm law | NC State extension.</i> Farm Law. https://farmlaw.ces.ncsu.edu/news/solar-development-ncsea-releases-report-on-property-tax-impact/</p>
+    <p class="citation" data-rev>Carey, J., Nanugonda, S., Gogoi, V., & Pate, D. (2025). </i>Increased North Carolina county tax revenue from utility-scale solar - 2025 update.</i> https://www.energync.org/wp-content/uploads/2025/06/2025_June-Property-Tax-Study_6.12.25.pdf?ct=t(member_call_aug21_2020_COPY_01)&mc_cid=c667b3335e&mc_eid=925ebdbec2</p>
+    <p class="citation" data-rev>Carey, J., & Pate, D. (2025). </i>North Carolina solar land use and agriculture study – 2025 update.</i> https://www.energync.org/wp-content/uploads/2025/11/2025_Solar_Ag_NCSEA_REV.pdf</p>
+    <p class="citation" data-rev>Hernandez, Rebecca R., Armstrong, Alona, Burney, Jennifer, Ryan, Greer, Moore-O'Leary, Kara, Diedhiou, Ibrahima, Grodsky, Steven M., Saul-Gershenz, Leslie, Davis, Rob, Macknick, Jordan E, Mulvaney, Dustin, Heath, Garvin A, Easter, Shane B., Hoffacker, Madison K., Allen, Michael F., & Kammen, Daniel M. (2019). Techno-ecological synergies of solar energy for global sustainability. <i>Nature Sustainability, 2.</i> https://doi.org/10.1038/s41893-019-0309-z</p>
+    <p class="citation" data-rev>Pandey, G., Lyden, S., Franklin, E., Millar, B., &amp; Harrison, M. T. (2025). A systematic review of agrivoltaics on productivity, profitability, and environmental co-benefits. <i>Sustainable Production and Consumption.</i> https://doi.org/10.1016/j.spc.2025.03.006</p>
+    <p class="citation" data-rev>Petrusa, J., Tilley, A., Nienow, S., & Cowell, C. (2023). <i>Economic analysis of clean energy development in North Carolina 2023 update.</i> https://energync.org/wp-content/uploads/2023/09/2023-RTI-Report.pdf</p>
+    <p class="citation" data-rev>Kunskaja, S., &amp; Budzy&#324;ski, A. (2026). Societal welfare implications of solar and renewable energy deployment: A systematic review. <i>Solar, 6</i>(1), 3. https://doi.org/10.3390/solar6010003</p>
+‌</p>
+
+‌
+
+‌</p>
+  </div>
+
+</div>
+
+<script>
+let currentSlide=0, totalSlides=7, autoTimer=null;
+const SLIDE_DURATION=8000;
+const rail=document.getElementById('rail'), dotsEl=document.getElementById('dots'),
+      nextBtn=document.getElementById('nextBtn'), cutscene=document.getElementById('cutscene'),
+      menu=document.getElementById('menu'), replayBtn=document.getElementById('replayBtn'),
+      mainScroll=document.getElementById('main-scroll'),
+      csProg=document.getElementById('csProg'), fadeCover=document.getElementById('fadeCover');
+
+// build dots
+for(let i=0;i<totalSlides;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.onclick=()=>{goToSlide(i);resetAuto()};
+  dotsEl.appendChild(d);
+}
+
+function goToSlide(n){
+  currentSlide=n;
+  rail.style.transform=`translateX(-${n*100}vw)`;
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('visible'));
+  setTimeout(()=>{const s=document.getElementById(`slide-${n}`);if(s)s.classList.add('visible')},200);
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===n));
+  csProg.style.transition='none';
+  csProg.style.width=((n/totalSlides)*100)+'%';
+  setTimeout(()=>{csProg.style.transition=`width ${SLIDE_DURATION}ms linear`;csProg.style.width=(((n+1)/totalSlides)*100)+'%'},50);
+  if(n===totalSlides-1){
+    // "Now" slide — hide next btn, auto-transition to menu after full duration
+    nextBtn.style.display='none';
+    clearAuto();
+    setTimeout(()=>skipToMenu(), SLIDE_DURATION);
+  } else {
+    nextBtn.style.display='flex';
+    nextBtn.innerHTML='Next <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>';
+    nextBtn.onclick=nextSlide;
+  }
+}
+
+function nextSlide(){if(currentSlide<totalSlides-1){goToSlide(currentSlide+1);resetAuto()}}
+function startAuto(){autoTimer=setInterval(()=>{if(currentSlide<totalSlides-1)goToSlide(currentSlide+1);else clearAuto()},SLIDE_DURATION)}
+function clearAuto(){if(autoTimer){clearInterval(autoTimer);autoTimer=null}}
+function resetAuto(){clearAuto();if(currentSlide<totalSlides-1)startAuto()}
+
+function doFade(cb){
+  // Phase 1: fade cover IN (450ms)
+  fadeCover.classList.add('in');
+  setTimeout(()=>{
+    // Phase 2: swap content while fully covered
+    cb();
+    // Phase 3: small buffer so new screen paints, then fade OUT
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        fadeCover.classList.remove('in');
+      });
+    });
+  },460);
+}
+
+function skipToMenu(){
+  clearAuto();
+  doFade(()=>{
+    cutscene.classList.remove('active'); menu.classList.add('active'); replayBtn.classList.add('show');
+    nextBtn.style.display='none'; dotsEl.style.display='none'; document.getElementById('skipCsBtn').style.display='none';
+    document.querySelector('.cs-prog-wrap').style.display='none';
+    ['ms0','ms1','ms2','ms3','ms4'].forEach((id,i)=>setTimeout(()=>document.getElementById(id).classList.add('vis'),300+i*110));
+  });
+}
+
+function replayCutscene(){
+  doFade(()=>{
+    menu.classList.remove('active'); replayBtn.classList.remove('show'); cutscene.classList.add('active');
+    nextBtn.style.display='flex'; dotsEl.style.display='flex'; document.getElementById('skipCsBtn').style.display='block';
+    document.querySelector('.cs-prog-wrap').style.display='block';
+    ['ms0','ms1','ms2','ms3','ms4'].forEach(id=>document.getElementById(id).classList.remove('vis'));
+    document.querySelectorAll('.slide').forEach(s=>s.classList.remove('visible'));
+    currentSlide=0; goToSlide(0); startAuto();
+  });
+}
+
+function enterSite(){
+  doFade(()=>{menu.classList.remove('active');replayBtn.classList.remove('show');mainScroll.classList.add('active');showSiteNav();document.getElementById('scrollTrack').classList.add('show');navSections.forEach(s=>{const el=document.getElementById(s.id);if(el)navObs.observe(el)});});
+}
+function closeSite(){
+  doFade(()=>{mainScroll.classList.remove('active');document.getElementById('scrollTrack').classList.remove('show');menu.classList.add('active');replayBtn.classList.add('show');hideSiteNav()});
+}
+
+const pages={
+  timeline:{t:'The Timeline',c:`<p><strong>2008</strong> : NC General Assembly creates the 80% solar property tax abatement. Solar properties pay taxes on only 20% of assessed value. No state expenditure required.</p><div class="callout">A market-based tool, zero dollars from the state budget required.</div><p><strong>2008–2022</strong> : Millions in clean energy investment flows into NC. Duplin, Robeson, Halifax, Edgecombe, Cumberland, Northampton, and Bladen each see over $500M in solar investment.</p><p><strong>2019</strong> : NCSEA documents the fiscal impact: across 50 counties, solar properties paid $594,438.6 in taxes, up from $66,867.4 pre-development. One county grew from $31,978 to over $800K in revenue.</p><p><strong>2024</strong> : NC ranks in the top 10 nationally for clean energy jobs with 113,000+ workers, adding 3,254 new jobs; 8th in the U.S (E2, 2025) Clean energy grows 6× faster than the broader NC economy.</p><p><strong>2025</strong> : HB 729 is filed. It cuts the 80% property tax exclusion to 0%, effective July 1, 2029, applying to existing projects and prohibits new utility-scale solar on most agricultural land.</p>`},
+  numbers:{t:'The Numbers',c:`<p>These are documented outcomes, not projections, from NCSEA county-level analysis and the 2025 NC State Extension update.</p><div class="callout">$964,915, One county's post-solar tax revenue, up from $25,207 before.</div><div class="callout">$225,574 : Average increase per utility-scale solar installation in 2022–2024 (NC State Extension, 2025).</div><div class="callout">3,728%; Nash County's increase. 2,498%; Northampton County's increase.</div><p>HB 729 would phase out the abatement that produced these figures by 2029. Solar occupies just 0.42% of NC's total land area.</p>`},
+  districts:{t:'Your Districts',c:`<p>The counties most affected by HB 729 are not Democratic urban centers. They are the rural, some majority-Republican-represented districts that drove the solar investment boom.</p><p>The counties that benefited most : Duplin, Robeson, Halifax, Edgecombe, Northampton, and Bladen; are not Democratic urban centers. They are the rural districts that drove the investment boom. The abatement didn't remove farmland; it added revenue on top of it.</p><div class="callout">Northampton County: 2,498% property tax revenue increase from solar. That funds schools, roads, and first responders in your constituents' communities.</div><p>Voting yes on HB 729 doesn't protect your constituents' farmland. It removes the financial incentive improving their counties' fiscal health for 17 years.</p>`},
+  opposition:{t:'The Other Side',c:`<p>Honest advocacy acknowledges the opposition. Here is the strongest version of the case for HB 729.</p><p><strong>The farmland conversion concern.</strong> Some agricultural landowners argue that solar leases running 25–35 years effectively remove parcels from agricultural use for a generation.</p><p><strong>The land valuation argument.</strong> Some landowners support HB 729 because eliminating the abatement would increase assessed values, beneficial if they intend to sell rather than lease.</p><div class="callout">Why this still fails: Pandey et al. (2025) in <i>Sustainable Production and Consumption</i> confirmed that agrivoltaic systems improve both crop productivity and land-use efficiency compared to either use alone. Solar and farming are not mutually exclusive.</div><p>Solar occupies 0.42% of NC's land area. The bill's costs to county budgets are concrete and documented. The farmland protection benefit is marginal and contested by science.</p>`},
+  theask:{t:'The Ask',c:`<p>There is one action. It is specific. It is immediate. It is a single vote.</p><div class="callout">Vote No on HB 729: The Farmland Protection Act.</div><p>Maintaining the 80% abatement requires no new spending. No new bill. Only that the General Assembly decline to change rules that have demonstrably benefited rural NC counties for 17 years.</p><p>The beneficiaries: rural county governments running on solar tax revenue, landowners with active lease agreements, and the clean energy workers whose jobs depend on the sector remaining viable.</p><p>The honest cost: some agricultural landowners support HB 729 because they prefer higher land valuations for sale. That tension is real. But the fiscal data is clear, the counties themselves benefit overwhelmingly from maintaining the abatement.</p><p><strong>One vote. Measurable consequences. Your constituents' tax base on the line.</strong></p>`}
+};
+
+function openPage(id,e){
+  if(e){document.documentElement.style.setProperty('--click-x',e.clientX+'px');document.documentElement.style.setProperty('--click-y',e.clientY+'px');e.stopPropagation()}
+  const d=pages[id];document.getElementById('page-title').textContent=d.t;document.getElementById('page-content').innerHTML=d.c;
+  setTimeout(()=>document.body.classList.add('page-open'),100);
+}
+function closePage(){document.body.classList.remove('page-open')}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closePage();
+  if(cutscene.classList.contains('active')){
+    if(e.key==='ArrowRight'||e.key===' ')nextSlide();
+    if(e.key==='ArrowLeft'&&currentSlide>0){goToSlide(currentSlide-1);resetAuto()}
+  }
+});
+
+
+document.querySelectorAll('.grid-item').forEach(item=>{
+  const card=item.querySelector('.grid-card');
+  if(!card) return;
+  item.addEventListener('mousemove',e=>{const r=item.getBoundingClientRect();card.style.transform=`rotateX(${((e.clientY-r.top-r.height/2)/(r.height/2))*-13}deg) rotateY(${((e.clientX-r.left-r.width/2)/(r.width/2))*13}deg) scale(1.04)`});
+  item.addEventListener('mouseleave',()=>{card.style.transform=''});
+});
+
+const gs=document.getElementById('grid-section');if(gs){new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)document.body.classList.add('grid-vis')})},{threshold:.1}).observe(gs);}
+
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('rev');e.target.classList.remove('unrev')}
+    else{e.target.classList.remove('rev');e.target.classList.add('unrev')}
+  });
+},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('[data-rev],.citation').forEach((el,i)=>{
+  if(!el) return;
+  if(el.classList.contains('citation'))el.style.transitionDelay=(i%5)*0.07+'s';
+  revObs.observe(el);
+});
+
+document.addEventListener('mousemove',e=>{
+  document.documentElement.style.setProperty('--click-x',e.clientX+'px');
+  document.documentElement.style.setProperty('--click-y',e.clientY+'px');
+});
+
+
+/* accordion */
+function toggleAcc(btn){
+  const item=btn.closest('.acc-item');
+  document.querySelectorAll('.acc-item.open').forEach(i=>{if(i!==item)i.classList.remove('open')});
+  item.classList.toggle('open');
+}
+/* county tabs */
+function showCounty(id,btn){
+  document.querySelectorAll('.county-panel').forEach(p=>p.classList.add('hidden'));
+  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('cp-'+id).classList.remove('hidden');
+  btn.classList.add('active');
+}
+
+
+/* site nav */
+function navTo(id, btn){
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth'});
+  if(btn){
+    btn.classList.add('clicked');
+    setTimeout(()=>btn.classList.remove('clicked'),400);
+  }
+}
+
+function showSiteNav(){
+  const nav=document.getElementById('siteNav');
+  nav.style.display='block';
+  setTimeout(()=>nav.classList.add('visible'),10);
+}
+function hideSiteNav(){
+  const nav=document.getElementById('siteNav');
+  nav.classList.remove('visible');
+  setTimeout(()=>nav.style.display='none',400);
+}
+
+// highlight active nav item on scroll
+const navSections=[
+  {id:'sec-intro',btn:1},{id:'sec-law',btn:2},{id:'sec-timeline',btn:3},{id:'sec-numbers',btn:4},
+  {id:'sec-threat',btn:5},{id:'sec-voices',btn:6},{id:'sec-landowner',btn:7},
+  {id:'sec-agri',btn:8},{id:'sec-case',btn:9},{id:'sec-ask',btn:10},{id:'sec-refs',btn:11}
+];
+const navBtns=()=>document.querySelectorAll('.nav-item');
+// Track which section is currently most visible
+let activeNavIdx=1;
+function setActiveNav(btnIdx){
+  activeNavIdx=btnIdx;
+  navBtns().forEach((b,i)=>{
+    b.classList.toggle('active', i===btnIdx);
+  });
+}
+const navObs=new IntersectionObserver(entries=>{
+  // Find the section that most recently entered from the top
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const match=navSections.find(s=>s.id===e.target.id);
+      if(match) setActiveNav(match.btn);
+    }
+  });
+},{threshold:0.15,rootMargin:'-5% 0px -40% 0px'});
+
+
+/* ── ANIMATED COUNTERS ── */
+function animateCounter(el, target, prefix, suffix, duration){
+  let start=0, startTime=null;
+  const step = timestamp => {
+    if(!startTime) startTime=timestamp;
+    const progress = Math.min((timestamp-startTime)/duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const val = Math.floor(ease * target);
+    el.textContent = prefix + val.toLocaleString() + suffix;
+    if(progress < 1) requestAnimationFrame(step);
+    else el.textContent = prefix + target.toLocaleString() + suffix;
+  };
+  requestAnimationFrame(step);
+}
+
+const counterObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const item = e.target;
+      const count = parseInt(item.dataset.count);
+      const prefix = item.dataset.prefix||'';
+      const suffix = item.dataset.suffix||'';
+      const numEl = item.querySelector('.qs-num');
+      if(numEl && !item.dataset.counted){
+        item.dataset.counted='1';
+        animateCounter(numEl, count, prefix, suffix, 1800);
+      }
+    }
+  });
+},{threshold:0.5});
+document.querySelectorAll('.qs-item[data-count]').forEach(el=>counterObs.observe(el));
+
+
+/* ── CURSOR ── */
+(function(){
+  const ring=document.getElementById('cursor-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  // hide until first mouse move
+  ring.style.opacity='0';
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX;my=e.clientY;
+    ring.style.opacity='1';
+  });
+  document.addEventListener('mousedown',()=>document.body.classList.add('cur-click'));
+  document.addEventListener('mouseup',()=>document.body.classList.remove('cur-click'));
+  document.addEventListener('mouseover',e=>{
+    const t=e.target;
+    const isClick=!!t.closest('button,a,[onclick],.grid-item,.dot,.ctab,.acc-trigger,.nav-item,.menu-enter-btn');
+    const isText=!isClick && !!t.closest('p,li,blockquote,.body-text,.section-lead,.card-body,.voice-quote,.pull-quote,.acc-body,.cmp-sub,.cmp-label,.pb-label,.pb-sub,.framing-body,.ag-finding,.iq-cite,.numbers-footnote,.voice-footnote,.menu-desc,.slide-body,.slide-headline,.citation');
+    document.body.classList.toggle('cur-hover', isClick);
+    document.body.classList.toggle('cur-text', isText);
+  });
+  let rot=0, prevMx=0, prevMy=0;
+  (function tick(){
+    const dx=mx-prevMx, dy=my-prevMy;
+    const velocity=Math.sqrt(dx*dx+dy*dy);
+    // rotate proportional to velocity, max ~2deg per frame, ease back to last pos
+    rot += velocity * 0.4;
+    prevMx=mx; prevMy=my;
+    rx+=(mx-rx)*.13;ry+=(my-ry)*.13;
+    ring.style.transform='translate(calc('+rx+'px - 50%), calc('+ry+'px - 50%)) rotate('+rot+'deg)';
+    requestAnimationFrame(tick);
+  })();
+})();
+
+document.addEventListener('DOMContentLoaded',()=>{
+  goToSlide(0);
+  startAuto();
+
+  // section entrance observer
+  const secObs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting) e.target.classList.add('in-view');
+    });
+  },{threshold:0.08,rootMargin:'0px 0px -60px 0px'});
+  document.querySelectorAll('.site-section').forEach(s=>secObs.observe(s));
+
+  // scroll progress
+  const scrollThumb=document.getElementById('scrollThumb');
+  mainScroll.addEventListener('scroll',()=>{
+    const pct=mainScroll.scrollTop/(mainScroll.scrollHeight-mainScroll.clientHeight)||0;
+    scrollThumb.style.height=(pct*100)+'%';
+  });
+});
+</script>
+</body>
+</html>
